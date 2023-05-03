@@ -53,16 +53,16 @@ public class UserService implements AppService {
 		System.out.print("# 수정할 회원번호: ");
 		int id =inputInteger();
 		if(userRepository.modiCheck(id)==1) {
-			System.out.print("# 회원명: ");
+			System.out.print("# 수정 회원명: ");
 			String name = inputString();
 
-			System.out.print("# 전화번호: ");
+			System.out.print("# 수정 전화번호: ");
 			String phone = inputString();
 
-			System.out.print("# 나이: ");
+			System.out.print("# 수정 나이: ");
 			int age = inputInteger();
 
-			System.out.print("# 거주지: ");
+			System.out.print("# 수정 거주지: ");
 			String location = inputString();
 			
 			userRepository.modiprocessUser(id,name,phone,age,location);
