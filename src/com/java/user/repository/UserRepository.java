@@ -17,7 +17,7 @@ public class UserRepository {
 
    // 회원추가
    public void addUser(User user) {
-  
+      System.out.println("repository: " + user);
       String sql = "INSERT INTO rent_users "
                + "(user_num, user_name, phone_number, user_age, user_location) "
                + "VALUES(rent_users_seq.NEXTVAL,?,?,?,?)";
@@ -30,7 +30,6 @@ public class UserRepository {
 
          if (pstmt.executeUpdate() == 1) {
             System.out.println("회원가입이 정상 처리되었습니다.");
-            
          } else {
             System.out.println("회원 가입에 실패했습니다. 관리자에게 문의하세요.");
          }
@@ -43,7 +42,7 @@ public class UserRepository {
    public List<User> findByUserName(String userName, String sql) {
       List<User> userList = new ArrayList<>();      
       try (Connection conn = connection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//         if(!userName.equals(""))pstmt.setString(1, userName);         
+         if(!userName.equals(""))pstmt.setString(1, userName);         
          ResultSet rs = pstmt.executeQuery();
          while (rs.next()) {
             UserGrade grade = UserGrade.valueOf(rs.getString("user_grade"));
