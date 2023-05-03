@@ -17,7 +17,6 @@ import com.java.common.CarCondition;
 public class CarService implements AppService {
 
 	private final CarRepository carRepository = new CarRepository();
-	List<Car> cars = new ArrayList<>();
 
 	@Override
 	public void start() {
@@ -32,7 +31,7 @@ public class CarService implements AppService {
 				break;
 			case 2:
 				// 차량 검색 메서드
-				showSearchResult(cars);
+				searchCarData();
 				break;
 			case 3:
 				// 차량 정보 수정 메서드
@@ -59,7 +58,8 @@ public class CarService implements AppService {
 	// 차량 삭제 메서드
 	private void deleteCar() {
 		// 전체 차량 정보를 자동으로 검색 후 결과가 있다면 차량 번호로 타겟 선택 및 삭제 진행
-		List<Car> cars = showSearchResult(carRepository.searchCarList(ALL, ""));
+		List<Car> cars = carRepository.searchCarList(ALL, "");
+		showSearchResult(cars);
 
 		if(cars.size() > 0) {
 			System.out.println("정보를 삭제할 차량번호를 선택해주세요. 정보 삭제를 취소하려면 0을 입력해주세요.");
@@ -84,10 +84,11 @@ public class CarService implements AppService {
 	private void modifyCarMenu() {
 		// 전체 차량 정보를 자동으로 검색 후 결과가 있다면 차량 번호로 타겟 선택 및 수정 진행
 		CarCondition condition = ALL;
-		List<Car> cars = showSearchResult(carRepository.searchCarList(condition, ""));
+		List<Car> cars = carRepository.searchCarList(condition, "");
+		showSearchResult(cars);
 
 		if(cars.size() > 0) {
-			System.out.println("정보를 수정할 차량번호를 선택해주세요. 정보 수정을 취소하려면 0을 입력해주세요.");
+			System.out.println("정보를 수정할 차량번호를 입력해주세요. 정보 수정을 취소하려면 0을 입력해주세요.");
 			System.out.print(">>> ");
 			int inputCarNum = inputInteger();
 
@@ -190,12 +191,9 @@ public class CarService implements AppService {
 	}
 
 	// 차량 검색 정보 출력 메서드
-	private List<Car> showSearchResult(List<Car> cars) {
+	private void showSearchResult(List<Car> cars) {
 
-		// 차량 검색을 위해 진입했다면 차량 검색 메서드를 실행
-		if(cars.size() < 1) cars = searchCarData();
-
-		// 차량 정보 수정을 위해 진입했다면 전체 차량 정보를 바로 출력
+		// 전달 받은 차량 리스트가 있다면 출력
 		if(cars.size() > 0) {
 			for(Car car : cars) {
 				System.out.println(car);
@@ -205,27 +203,37 @@ public class CarService implements AppService {
 			System.out.println("\n### 검색 결과가 없습니다.");
 		}
 
-		return cars;
+		return;
 
 	}
 
 	// 차량 검색 메서드
-	private List<Car> searchCarData() {
+	private void searchCarData() {
 		System.out.println("\n=============== 차량 검색 조건을 선택하세요. ===============");
 		System.out.println("[ 1. 차종 검색 | 2. 차량 ID 검색 | 3. 이용 중인 차량 검색 | 4. 렌트 가능 차량 검색 | 5. 전체 차량 검색 ]");
 		System.out.print(">>> ");
 		int selection = inputInteger();
 
 		CarCondition condition = ALL;
+		String keyword = "";
+		List<Car> cars = new ArrayList<>();
 
 		switch (selection) {
 		case 1:
 			System.out.println("\n### 차종으로 검색합니다.");
 			condition = CAR_MODEL;
+			System.out.print("# 검색할 차량 모델명 : ");
+			keyword = "'%" + inputString().toUpperCase() + "%'";
+			cars = carRepository.searchCarList(condition, keyword);
+			showSearchResult(cars);
 			break;
 		case 2:
 			System.out.println("\n### 차량 ID로 검색합니다.");
 			condition = CAR_ID;
+			System.out.print("# 검색할 차량 ID : ");
+			keyword = "'%" + inputString().toUpperCase() + "%'";
+			cars = carRepository.searchCarList(condition, keyword);
+			showSearchResult(cars);
 			break;
 //		case 3:
 //			System.out.println("\n### 차량 상태로 검색합니다.");
@@ -234,43 +242,58 @@ public class CarService implements AppService {
 		case 3:
 			System.out.println("\n### 이용 중인 차량을 검색합니다.");
 			condition = ONRENT;
+			cars = carRepository.searchCarList(condition, keyword);
+			showSearchResult(cars);
+			rentUserSearch(cars);
 			break;
 		case 4:
 			System.out.println("\n### 렌트 가능한 차량을 검색합니다.");
 			condition = AVAILABLE;
-			// 렌트 기능 구현 후 차량 번호 선택하여 바로 렌트 가능하도록 구현 예정
+			cars = carRepository.searchCarList(condition, keyword);
+			showSearchResult(cars);
 			break;
 		case 5:
 			System.out.println("\n### 전체 정보를 검색합니다.");
+			cars = carRepository.searchCarList(condition, keyword);
+			showSearchResult(cars);
 			break;
 
 		default:
 			System.out.println("\n### 잘못 입력했습니다.");
 		}
 
-		String keyword = "";
-		if(condition == CAR_MODEL) {
-			System.out.print("# 검색할 차량 모델명 : ");
-			keyword = "'%" + inputString().toUpperCase() + "%'";
-		} else if(condition == CAR_ID) {
-			System.out.print("# 검색할 차량 ID : ");
-			keyword = "'%" + inputString().toUpperCase() + "%'";
-		}
-
-		return carRepository.searchCarList(condition, keyword);
+		return;
 
 	}
 
 	// 이용 중인 차량의 사용자 정보 검색 메서드
-	private void onrentUserSearch() {
+	private void rentUserSearch(List<Car> cars) {
 		System.out.println("이용 중인 차량의 사용자 정보를 검색하시겠습니까? [Y / N]");
+		System.out.print(">>> ");
 		String anwser = inputString().toUpperCase();
 		
 		if(anwser.equals("Y")) {
+			System.out.println(" 사용자 정보를 검색할 차량번호를 입력해주세요. 검색을 취소하려면 0을 입력해주세요.");
+			System.out.print(">>> ");
+			int searchNum = inputInteger();
 			
-		} else {
+			if(searchNum != 0) {
+				int count = 0; // 해당 번호 차량 존재 여부 확인용 카운트
+				for(Car car : cars) {
+					if(car.getCarNum() == (searchNum)) {
+						// 이용 중인 차량의 사용자 정보를 DB에서 검색하는 메서드
+						carRepository.rentUserSearchDB(searchNum);
+					}
+				}
+				if(count == cars.size()) System.out.println("검색된 차량 번호를 입력하세요.");
+			} else {
+				System.out.println("차량 정보 수정을 취소합니다.");
+			}
+		} else if(anwser.equals("N")) {
 			System.out.println("검색 메뉴로 돌아갑니다.");
 			return;
+		} else {
+			System.out.println("잘못 입력하셨습니다.");
 		}
 	}
 

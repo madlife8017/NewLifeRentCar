@@ -3,10 +3,6 @@ package com.java.rent.repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,10 +16,10 @@ import com.java.rent.domain.Rent;
 
 public class RentRepository {
 
-	private static DataBaseConnection connection = DataBaseConnection.getInstance();
+	private DataBaseConnection connection = DataBaseConnection.getInstance();
 
 	//전체 대여 상황
-	public static List<Rent> searchRentList(String sql,int signal){		
+	public List<Rent> searchRentList(String sql,int signal){		
 		List<Rent> rentList = new ArrayList<>();
 		try(Connection conn = connection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -41,7 +37,6 @@ public class RentRepository {
 				rentList.add(rent);
 				if(signal==1)System.out.println(rent.form1());				
 				else if(signal==2)System.out.println(rent.form2());
-				else if(signal==3)System.out.println(rent.form2());
 
 			}
 
@@ -70,7 +65,7 @@ public class RentRepository {
 	}
 
 	public void rentprocessCar(int carNum, int userNum) {
-		String sql="UPDATE cars SET user_num = "+userNum+", car_status='ONRENT' WHERE car_num = "+ carNum;
+		String sql="UPDATE cars SET user_num = "+userNum+", car_status='onRent' WHERE car_num = "+ carNum;
 		try(Connection conn = connection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			if(pstmt.executeUpdate() == 1) {
@@ -177,8 +172,7 @@ public class RentRepository {
 
 	}
 
-	public static int avCheck(String sql) {
-		int count=0;
+	public List<Car_temp> avCheck(String sql) {
 		List<Car_temp> carList = new ArrayList<>();
 		try(Connection conn = connection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -195,7 +189,6 @@ public class RentRepository {
 						);
 				System.out.println("### 차량 번호 :" +car.getCarNum()+", 차량 모델 :" +car.getCarModel()+
 						" 차량 사이즈 : "+car.getCarSize()+", 차량 등급 : "+car.getCarGrade());
-				count++;
 
 			}
 
@@ -203,31 +196,12 @@ public class RentRepository {
 			e.printStackTrace();
 
 		}		
-		return count;
-
-	}
-	public static int avCheck2(String sql) {
-		int count=0;
-		List<Car_temp> carList = new ArrayList<>();
-		try(Connection conn = connection.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql);
-				ResultSet rs = pstmt.executeQuery();) {	
-			while(rs.next()) {
-					
-				count++;
-
-			}
-
-		} catch (Exception e) {			
-			e.printStackTrace();
-
-		}		
-		return count;
+		return carList;
 
 	}
 
 	public void returnProcessCar(int carNum) {	
-		String sql="UPDATE cars SET user_num =null, car_status='AVAILABLE' WHERE car_num = "+ carNum;
+		String sql="UPDATE cars SET user_num =null, car_status='available' WHERE car_num = "+ carNum;
 		try(Connection conn = connection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			if(pstmt.executeUpdate() == 1) {
@@ -269,87 +243,5 @@ public class RentRepository {
 
 		}
 		return carNum;
-	}
-	public String accountProcessRent(int rentNum, int signal) {
-		String sql ="SELECT * FROM rent_history r "
-				+ "INNER JOIN rent_users u "
-				+ "ON u.user_num = r.user_num "
-				+ "INNER JOIN cars c "
-				+ "On r.car_num = c.car_num "
-				+ "WHERE rent_num="+rentNum;
-		String name="";
-		String today =LocalDate.now().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
-		Date rentDate=null;
-		
-		Date format1 = null;
-		Date format2 = null;
-		long diffDays=0;
-		int fee=0;	
-		String rent="";
-		String retur="";
-		
-		
-        SimpleDateFormat format = new SimpleDateFormat("yy/MM/dd");
-        
-        
-		
-		try(Connection conn = connection.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql);
-				ResultSet rs = pstmt.executeQuery();) {	
-			while(rs.next()) {
-
-						name = rs.getString("user_name");
-						rentDate = rs.getDate("user_rent_date");	
-						rent = format.format(rentDate);
-							
-						
-						fee= rs.getInt("car_fee");
-						if(signal==1) {
-							Date returnDate=null;	
-							returnDate = rs.getDate("user_return_date");	
-							retur = format.format(returnDate);								
-							today=retur;
-						}
-						
-			}
-			
-			try {
-				 format1 = new SimpleDateFormat("yy/MM/dd").parse(rent);
-				 format2 = new SimpleDateFormat("yy/MM/dd").parse(today);
-				 
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				System.out.println("잘못입력하셨습니다.");			
-				e.printStackTrace();
-			}
-			
-			long diffSec = (format2.getTime() - format1.getTime()) / 1000;
-			diffDays = diffSec/ (24*60*60);
-
-		} catch (Exception e) {			
-			e.printStackTrace();
-		}
-		return "[렌트번호 "+rentNum+"/ 이용자 :" +name+ " / "+rentDate+" 부터 "+today+ " 까지 총 요금 매출 " + ((diffDays+1)*fee)+"원 입니다.]";
-		
-	}
-	
-	public long dateMan(String expDate) {
-		String date1 = LocalDate.now().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
-
-		Date format1 = null;
-		Date format2 = null ;
-		try {
-			format1 = new SimpleDateFormat("yy/MM/dd").parse(date1);
-			format2 = new SimpleDateFormat("yy/MM/dd").parse(expDate);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			System.out.println("잘못입력하셨습니다.");			
-			e.printStackTrace();
-		}
-		long diffSec = (format2.getTime() - format1.getTime()) / 1000;
-
-		long diffDays = diffSec/ (24*60*60);
-		return diffDays;
-		
 	}
 }

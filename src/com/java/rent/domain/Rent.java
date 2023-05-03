@@ -129,12 +129,6 @@ public class Rent {
 				"### 차량 번호 : " + carNum +
 				", 예상 반납 일자: " + userExpDate;
 	}
-	public String form3() {
-
-		return
-				"### 차량 번호 : " + carNum +
-				", 예상 반납 일자: " + userExpDate;
-	}
 	
 
 

@@ -11,10 +11,14 @@ import com.java.car.domain.CarGrade;
 import com.java.car.domain.CarSize;
 import com.java.common.CarCondition;
 import com.java.common.DataBaseConnection;
+import com.java.user.domain.User;
+import com.java.user.domain.UserGrade;
 
 public class CarRepository {
 
 	private DataBaseConnection connection = DataBaseConnection.getInstance();
+	private Car car;
+	private User user;
 
 	// 차량 정보 DB 추가 메서드
 	public void addCar(Car Car) {
@@ -81,9 +85,9 @@ public class CarRepository {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return carList;
-		
+
 	}
 
 	// 차량 번호를 통해 DB의 차량 정보를 수정하는 메서드
@@ -128,4 +132,54 @@ public class CarRepository {
 
 	}
 
+	// 차량 번호를 통해 차량 정보와 함께 사용자 정보를 검색하는 메서드
+	public void rentUserSearchDB(int searchNum) {
+
+		String sql = "SELECT * FROM "
+				+ "(SELECT c.car_num, c.car_Id, c.car_model, c.car_size, c.car_fee, c.car_grade, c.car_status, "
+				+ "c.user_num, r.user_name, r.phone_number, r.user_age, r.user_grade, r.user_location "
+				+ "FROM cars c "
+				+ "JOIN rent_users r "
+				+ "ON c.user_num = r.user_num) WHERE car_num = " + searchNum;
+
+		try(Connection conn = connection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				ResultSet rs = pstmt.executeQuery();) {
+			while(rs.next()) {
+				CarSize carSize = CarSize.valueOf(rs.getString("car_size"));
+				CarGrade carGrade = CarGrade.valueOf(rs.getString("car_grade"));
+				Car car = new Car(
+						rs.getInt("car_num"),
+						rs.getString("car_id"),
+						rs.getString("car_model"),
+						carSize,
+						rs.getInt("car_fee"),
+						carGrade,
+						rs.getString("car_status"),
+						rs.getInt("user_num")
+						);
+				UserGrade grade = UserGrade.valueOf(rs.getString("user_grade"));
+				User user = new User(rs.getInt("user_num"),
+						rs.getString("user_name"),
+						rs.getString("phone_number"),
+						rs.getInt("user_age"),
+						grade,
+						rs.getString("user_location")
+						);
+				showSearchResultAll(car, user);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return;
+	}
+
+	private void showSearchResultAll(Car car, User user) {
+		
+		System.out.println("이용중인 차량 정보 \n" + car);
+		System.out.println("이용중인 사용자 정보 \n" + user);
+		
+		return;
+	}
+	
 }

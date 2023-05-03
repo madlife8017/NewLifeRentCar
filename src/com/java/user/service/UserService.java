@@ -92,9 +92,9 @@ public class UserService implements AppService {
 
 	private List<User> searchUser() {
 		System.out.println("\n### 조회할 회원의 이름을 입력하세요.");
-		System.out.print(">>> ");
+		System.out.println(">>> ");
 		String name = inputString();
-		String sql = "SELECT * FROM rent_users WHERE user_name LIKE '%"+name+"%'";
+		String sql = "SELECT * FROM rent_users WHERE user_name=?";
 		return userRepository.findByUserName(name,sql);
 	}
 	private List<User> searchUserTotal() {
@@ -124,11 +124,11 @@ public class UserService implements AppService {
 
 	//회원 탈퇴 비즈니스 로직
 	private void deleteUser() {
-		
+		if(showSearchResult() > 0) {
 			System.out.println("\n### 탈퇴할 회원의 번호를 입력하세요.");
 			System.out.print(">>> ");
 			int delUserNum = inputInteger();
 			userRepository.deleteUser(delUserNum);
-		
+		}
 	}
 }

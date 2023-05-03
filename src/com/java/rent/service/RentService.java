@@ -30,6 +30,7 @@ public class RentService implements AppService {
 			case 1:
 				
 				searchRentData();
+
 				break;
 			case 2:
 				
@@ -45,9 +46,6 @@ public class RentService implements AppService {
 
 				break;
 			case 5:
-				accountRent();
-				break;
-			case 6:
 			
 				System.out.println("\n첫 화면으로 돌아갑니다.\n");
 				return;
@@ -77,7 +75,7 @@ public class RentService implements AppService {
 			break;
 		case 2:
 			System.out.println("\n### 대여 가능 차량을 검색합니다.");
-			sql = "SELECT * FROM cars WHERE car_status='AVAILABLE' ";
+			sql = "SELECT * FROM cars WHERE car_status='available' ";
 			rentRepository.avCheck(sql);
 			break;			
 		case 3:
@@ -93,42 +91,15 @@ public class RentService implements AppService {
 			System.out.println("\n### 잘못 입력했습니다.");
 		}		
 	}
-	
-	private void accountRent() {
-		System.out.println("매출 조회 하실 [렌트번호] 를 입력하세요");
-		System.out.print(">>> ");
-		int rentNum = inputInteger();
-		int signal = 0;
-		String date1 = LocalDate.now().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
-		if(rentRepository.rentCheck(rentNum).equals("TRUE")){
-			System.out.println("차량이 반납된 대여건입니다.");
-			signal =1;
-			System.out.println(rentRepository.accountProcessRent(rentNum,signal));
-			
-		
-		}else if(rentRepository.rentCheck(rentNum).equals("false")){
-			System.out.println("현재 대여중인 대여 건입니다. 오늘날짜("+date1+")까지 요금 매출이 조회됩니다.");
-			signal =2;
-			System.out.println(rentRepository.accountProcessRent(rentNum,signal));
-			
-			
-		}
-		
-		
-	}
 
 	private void newRent()  {
-		System.out.println("\n========================== 대여 가능 차량 ==========================\n");
-		String sql = "SELECT * FROM cars WHERE car_status='AVAILABLE' ";
-		rentRepository.avCheck(sql);
-		System.out.println("\n================================================================");
 
 		System.out.println("대여하실 차량 번호를 입력하세요");
 		System.out.print(">>> ");
 		int carNum = inputInteger();
-		if(rentRepository.rentCheckCarnum(carNum).equals("ONRENT")||rentRepository.rentCheckCarnum(carNum).equals("REPAIR")){
+		if(rentRepository.rentCheckCarnum(carNum).equals("onRent")||rentRepository.rentCheckCarnum(carNum).equals("repair")){
 			System.out.println("대여 혹은 점검중인 차량입니다.");
-		} else if (rentRepository.rentCheckCarnum(carNum).equals("AVAILABLE") ) {
+		} else if (rentRepository.rentCheckCarnum(carNum).equals("available") ) {
 
 			System.out.println("회원번호를 입력하세요");
 			System.out.print(">>> ");
@@ -137,12 +108,29 @@ public class RentService implements AppService {
 			System.out.println("반납예정일을 입력하세요 (YY/MM/DD)");
 			System.out.print(">>> ");
 			String expDate = inputString();
+
+			String date1 = LocalDate.now().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
+
+			Date format1 = null;
+			Date format2 = null ;
+			try {
+				format1 = new SimpleDateFormat("yy/MM/dd").parse(date1);
+				format2 = new SimpleDateFormat("yy/MM/dd").parse(expDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				System.out.println("잘못입력하셨습니다.");			
+				e.printStackTrace();return;
+			}
+			long diffSec = (format2.getTime() - format1.getTime()) / 1000;
+
+			long diffDays = diffSec/ (24*60*60);
+
 			System.out.println("\n========= 대여 확인 =========");
 			System.out.println("### 회원 번호 : " + userNum +" 번");
 			System.out.println("### 대여 차량 : " + carNum +" 번");
 			System.out.println("### 반납 예정일 : " + expDate );
-			System.out.println("### 대여 기간 : " +rentRepository.dateMan(expDate) +" 일");	       
-			System.out.println("### 예상 비용: " + rentRepository.getFee(carNum)*rentRepository.dateMan(expDate)+" 원");
+			System.out.println("### 대여 기간 : " +diffDays +" 일");	       
+			System.out.println("### 예상 비용: " + rentRepository.getFee(carNum)*diffDays+" 원");
 			System.out.println("==========================");
 			System.out.println("\n대여를 진행하시겠습니까? (Y/N)");
 			System.out.print(">>> ");
