@@ -150,7 +150,7 @@ public class RentService implements AppService {
 			if(confrim.equals("Y")||confrim.equals("y")) {
 				rentRepository.rentprocessRenthistory(carNum,userNum,expDate);
 				rentRepository.rentprocessCar(carNum, userNum);
-			}else if(confrim.equals("N")||confrim.equals("n")){
+			}else{
 				System.out.println("대여가 취소되었습니다.");
 				return;        	
 			} 
@@ -175,7 +175,7 @@ public class RentService implements AppService {
 			String confrim = inputString();
 			if(confrim.equals("Y")||confrim.equals("y")) {
 				rentRepository.extendprocessRenthistory(rentNum,newExpDate);
-			}else if(confrim.equals("N")||confrim.equals("n")){
+			}else {
 				System.out.println("대여가 취소되었습니다.");
 				return;        	
 			} 
@@ -198,7 +198,7 @@ public class RentService implements AppService {
 				System.out.println("차량이 반납되었습니다.");				
 				rentRepository.returnProcessCar(rentRepository.returnProcessRenthistory(rentNum));			
 				
-			}else if(confrim.equals("N")||confrim.equals("n")){
+			}else{
 				System.out.println("반납이 취소되었습니다.");
 				return;        	
 			} 

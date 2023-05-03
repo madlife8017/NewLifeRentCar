@@ -38,6 +38,45 @@ public class UserRepository {
          e.printStackTrace();
       }
    }
+   
+   public  int modiCheck(int id) {
+	   
+	      String sql = "SELECT * FROM rent_users WHERE user_num =" + id;   
+	             
+
+	      try (Connection conn = connection.getConnection(); 
+	    		  PreparedStatement pstmt = conn.prepareStatement(sql);
+	    		  ResultSet rs = pstmt.executeQuery();) {
+	    	  while(rs.next()) {	        
+	            return 1;	            
+	         } 
+	      } catch (Exception e) {
+	         e.printStackTrace();
+	      }
+	      return 0;
+	   }
+   
+   public void modiprocessUser(int id,String name,String phone,int age,String location) {
+		String sql="UPDATE rent_users SET user_num = ?, user_name= ?, "
+				+ "phone_number = ?, user_age=?, user_location=? WHERE user_num = ?";
+	    try (Connection conn = connection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	         pstmt.setInt(1, id);
+	         pstmt.setString(2, name);
+	         pstmt.setString(3, phone);
+	         pstmt.setInt(4, age);
+	         pstmt.setString(5, location);
+	         pstmt.setInt(6, id);
+
+	         if (pstmt.executeUpdate() == 1) {
+	            System.out.println("회원정보 수정이 정상 처리되었습니다.");
+	            
+	         } else {
+	            System.out.println("회원 정보 수정에 실패했습니다. 입력값을 확인하세요!");
+	         }
+	      } catch (Exception e) {
+	         e.printStackTrace();
+	      }
+	}
 
    // 회원의 이름으로 정보 검색
    public List<User> findByUserName(String userName, String sql) {
@@ -68,6 +107,7 @@ public class UserRepository {
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
                pstmt.setInt(1, delUserNum);
                
+               
                if(pstmt.executeUpdate() == 1) {
                   System.out.println("\n### 회원정보가 정상 삭제되었습니다.");
                } else {
@@ -77,4 +117,6 @@ public class UserRepository {
             e.printStackTrace();
          }
       }
+
+	
 }

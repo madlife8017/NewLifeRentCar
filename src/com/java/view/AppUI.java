@@ -84,7 +84,8 @@ public class AppUI {
 		System.out.println("### 1. 신규 회원 추가");
 		System.out.println("### 2. 회원 검색");
 		System.out.println("### 3. 회원 탈퇴");
-		System.out.println("### 4. 첫 화면으로 가기");
+		System.out.println("### 4. 회원 정보 수정");
+		System.out.println("### 5. 첫 화면으로 가기");
 		System.out.println("---------------------------------");
 		System.out.print(">>> ");
 	}

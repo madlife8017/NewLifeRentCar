@@ -1,7 +1,12 @@
 package com.java.user.service;
 
-import static com.java.view.AppUI.*;
+import static com.java.view.AppUI.inputInteger;
 
+import static com.java.view.AppUI.inputString;
+import static com.java.view.AppUI.userManagementScreen;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +35,10 @@ public class UserService implements AppService {
 				deleteUser();
 				break;
 			case 4:
+				modiUser();
+				break;
+			case 5:
+
 				return; //메인 화면으로 돌아가기
 
 			default:
@@ -39,6 +48,32 @@ public class UserService implements AppService {
 			inputString();
 		}
 	}
+
+	private void modiUser() {
+		System.out.print("# 수정할 회원번호: ");
+		int id =inputInteger();
+		if(userRepository.modiCheck(id)==1) {
+			System.out.print("# 회원명: ");
+			String name = inputString();
+
+			System.out.print("# 전화번호: ");
+			String phone = inputString();
+
+			System.out.print("# 나이: ");
+			int age = inputInteger();
+
+			System.out.print("# 거주지: ");
+			String location = inputString();
+			
+			userRepository.modiprocessUser(id,name,phone,age,location);
+		}else {
+			System.out.println("없는 회원 번호입니다.");
+		}
+
+
+	}
+	
+	
 
 	// 회원 추가 비즈니스 로직
 	private void join() {
@@ -124,11 +159,11 @@ public class UserService implements AppService {
 
 	//회원 탈퇴 비즈니스 로직
 	private void deleteUser() {
-		
-			System.out.println("\n### 탈퇴할 회원의 번호를 입력하세요.");
-			System.out.print(">>> ");
-			int delUserNum = inputInteger();
-			userRepository.deleteUser(delUserNum);
-		
+
+		System.out.println("\n### 탈퇴할 회원의 번호를 입력하세요.");
+		System.out.print(">>> ");
+		int delUserNum = inputInteger();
+		userRepository.deleteUser(delUserNum);
+
 	}
 }
