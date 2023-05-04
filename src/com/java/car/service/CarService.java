@@ -288,7 +288,7 @@ public class CarService implements AppService {
 				}
 				if(count == cars.size()) System.out.println("검색된 차량 번호를 입력하세요.");
 			} else {
-				System.out.println("차량 정보 수정을 취소합니다.");
+				System.out.println("사용자 정보 검색을 취소합니다.");
 			}
 		} else if(anwser.equals("N")) {
 			System.out.println("검색 메뉴로 돌아갑니다.");

@@ -111,19 +111,28 @@ public class Car {
 	}
 
 	@Override
-	public String toString() {
+    public String toString() {
 
-		return
-				"### 차량번호 : " + carNum +
-				", 차량ID : " + carId +
-				", 차량 모델명 : " + carModel +
-				", 차량 구분 : " + carSize +
-				", 차량 렌트 요금 : " + carFee + "원" +
-				", 차량등급 : " + carGrade +
-				", 차량상태 : " + carStatus +
-				", 렌트한 회원 번호 : " + userNum;
-	}
-
-
+        if(userNum != 0) {
+        return
+                "### 차량번호 : " + carNum +
+                ", 차량ID : " + carId +
+                ", 차량 모델명 : " + carModel +
+                ", 차량 구분 : " + carSize +
+                ", 차량 렌트 요금 : " + carFee + "원" +
+                ", 차량등급 : " + carGrade +
+                ", 차량상태 : " + carStatus +
+                ", 렌트한 회원 번호 : " + userNum;
+        } else {
+            return
+            "### 차량번호 : " + carNum +
+            ", 차량ID : " + carId +
+            ", 차량 모델명 : " + carModel +
+            ", 차량 구분 : " + carSize +
+            ", 차량 렌트 요금 : " + carFee + "원" +
+            ", 차량등급 : " + carGrade +
+            ", 차량상태 : " + carStatus;
+        }
+    }
 
 }
