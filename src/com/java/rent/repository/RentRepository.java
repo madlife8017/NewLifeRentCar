@@ -46,8 +46,7 @@ public class RentRepository {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();			
-		}
+			System.out.println("잘못된 정보입니다.");}
 
 		return rentList;
 	}
@@ -64,7 +63,7 @@ public class RentRepository {
 				System.out.println("\n### 신규 대여를 실패하였습니다.\n");
 			}
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 	}
@@ -79,7 +78,7 @@ public class RentRepository {
 				System.out.println("\n### 차량 리스트에 신규 대여 정보 반영을 실패하였습니다.\n");
 			}
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 	}
@@ -93,7 +92,7 @@ public class RentRepository {
 				System.out.println("\n### 차량 리스트에 신규 대여 정보 반영을 실패하였습니다.\n");
 			}
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 	}
@@ -114,7 +113,7 @@ public class RentRepository {
 			}
 
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 		return fee;		
@@ -134,7 +133,7 @@ public class RentRepository {
 			System.out.println("\n### 기존 예상 반납 일은 [" + date+"] 입니다\n");
 
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 
@@ -152,7 +151,7 @@ public class RentRepository {
 			}
 
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 		return check;
@@ -170,7 +169,7 @@ public class RentRepository {
 			
 
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 		return check;
@@ -200,7 +199,7 @@ public class RentRepository {
 			}
 
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}		
 		return count;
@@ -219,7 +218,7 @@ public class RentRepository {
 			}
 
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}		
 		return count;
@@ -236,7 +235,7 @@ public class RentRepository {
 				System.out.println("\n### 차량 리스트에 반납 정보 반영을 실패하였습니다.\n");
 			}
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 	}
@@ -250,7 +249,7 @@ public class RentRepository {
 				System.out.println("\n### 차량 반납에 실패하였습니다. \n");
 			}
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 		
@@ -265,7 +264,7 @@ public class RentRepository {
 
 			}
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 
 		}
 		return carNum;
@@ -327,7 +326,7 @@ public class RentRepository {
 			diffDays = diffSec/ (24*60*60);
 
 		} catch (Exception e) {			
-			e.printStackTrace();
+			System.out.println("잘못된 정보입니다.");
 		}
 		return "[렌트번호 "+rentNum+"/ 이용자 :" +name+ " / "+rentDate+" 부터 "+today+ " 까지 총 요금 매출 " + ((diffDays+1)*fee)+"원 입니다.]";
 		
@@ -344,7 +343,7 @@ public class RentRepository {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			System.out.println("잘못입력하셨습니다.");			
-			e.printStackTrace();
+			
 		}
 		long diffSec = (format2.getTime() - format1.getTime()) / 1000;
 

@@ -1,0 +1,1 @@
+INDEX VERSION 1.131+C:\work\Rent_Car\.metadata\.plugins\org.eclipse.jdt.core
