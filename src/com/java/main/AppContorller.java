@@ -25,7 +25,8 @@ public class AppContorller {
 			System.out.println("# 프로그램을 종료합니다");
 			System.exit(0);
 		default:
-			System.out.println("# 메뉴를 다시 입력하세요.");	
+			System.out.println("# 메뉴를 다시 입력하세요.");
+			return;
 		}		
 		service.start();
 		

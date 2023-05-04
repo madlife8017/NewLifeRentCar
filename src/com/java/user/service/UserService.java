@@ -43,6 +43,7 @@ public class UserService implements AppService {
 
 			default:
 				System.out.println("메뉴를 다시 입력하세요.");
+				return;
 			}
 			System.out.println("\n====== 계속 진행하시려면 ENTER를 누르세요 ======");
 			inputString();
